@@ -1,28 +1,70 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {withStyles} from '@material-ui/core/styles';
+
+const styles = {
+    gameContainer: {
+        display: 'grid',
+        gridGap: '4px',
+        padding: '10px',
+        gridTemplateColumns: '100px 800px'
+    },
+    optionsPanel: {
+        backgroundColor: '#b8e9ff',
+        padding: '10px',
+    },
+    field: {
+        backgroundColor: '#ffdb96',
+        display: 'grid',
+        padding: '10px',
+        gridTemplateColumns: '350px 350px',
+    },
+    player: {
+        backgroundColor: '#ffaba1',
+        margin: '8px',
+        minHeight: '50px'
+    },
+    dutchSpace: {
+        backgroundColor: '#ff9578',
+        margin: '8px',
+        gridColumn: '1/3',
+        minHeight: '100px'
+
+    },
+    colorful: {
+        color: '#ff0000'
+    }
+};
 
 class App extends Component {
+
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+        const styleClass = this.props.classes;
+
+        return (
+          <div className="App">
+
+            <div className={styleClass.gameContainer}>
+                <div className={styleClass.optionsPanel}>
+
+                </div>
+
+                <div className={styleClass.field}>
+                    <div className={styleClass.player}>a</div>
+                    <div className={styleClass.player}>b</div>
+
+                    <div className={styleClass.dutchSpace}>c</div>
+
+                    <div className={styleClass.player}>d</div>
+                    <div className={styleClass.player}>e</div>
+                </div>
+            </div>
+
+
+          </div>
+        );
+      }
 }
+
+App = withStyles(styles)(App);
 
 export default App;
