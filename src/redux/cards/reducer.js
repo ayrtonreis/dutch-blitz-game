@@ -69,6 +69,12 @@ function removeFromPostPile(piles, position){
     });
 }
 
+const removeFrom = {
+    'BLITZ_PILE': removeFromBlitzPile,
+    'WOOD_PILE': removeFromWoodPile,
+    'POST_PILE': removeFromPostPile,
+};
+
 function cards(state, action){
     /*
         state is of the form:
@@ -123,6 +129,10 @@ function cards(state, action){
             const playerData = state.playerData;
             const pos = action.position;
             const origin = action.origin;
+
+
+
+
     }
 }
 

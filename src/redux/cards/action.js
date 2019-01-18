@@ -17,3 +17,37 @@ export const moveCardToPostPile = (card, origin) => ({
     card,
     origin
 });
+
+export const selectCard = (card) => ({
+    type: 'SELECT_CARD',
+    card
+});
+
+export const moveCardIfValid = (playerId, pileType) => {
+  return (dispatch, getState) => {
+      const {
+
+      } = getState();
+  };
+};
+
+export const selectOriginCardIfValid = (playerId, pileType) => {
+    return(dispatch, getState) => {
+
+    }
+};
+
+export const cardClicked = (playerId, pileType) => {
+    return (dispatch, getState) => {
+        const state = getState();
+
+        const playerData = state[`player${playerId}Data`];
+
+        if(playerData.origin === null)
+            dispatch(selectOriginCardIfValid(playerId, pileType));
+        else
+            dispatch(moveCardIfValid(playerId, pileType));
+
+
+    };
+};

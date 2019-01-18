@@ -27,13 +27,13 @@ const styles = {
 const Field = ({classes}) => {
     return(
         <div className={classes.field}>
-            <Player/>
-            <Player/>
+            <Player id={1}/>
+            <Player id={2}/>
 
             <DutchSpace/>
 
-            <Player/>
-            <Player/>
+            <Player id={3}/>
+            <Player id={4}/>
         </div>
     );
 };

@@ -5,6 +5,7 @@ import classNames from 'classnames'
 const styles = theme => ({
     card: {
         height: '60px',
+        width: '100%'
     },
     cardRed: {
         backgroundColor: '#ff5451',
@@ -32,7 +33,8 @@ const Card = ({
               color,
               gender = 'N',
               number = '0',
-              classes
+              classes,
+              onClick,
     }) => {
 
     const mapClasses = {
@@ -45,10 +47,10 @@ const Card = ({
     const classColor = mapClasses[color] ? mapClasses[color] : mapClasses['empty'];
 
     return(
-        <div className={classNames(classes.card, classColor)}>
+        <button onClick={onClick} className={classNames(classes.card, classColor)}>
             <div className={classes.gender}>{gender}</div>
             <div className={classes.number}>{number}</div>
-        </div>
+        </button>
     );
 };
 
