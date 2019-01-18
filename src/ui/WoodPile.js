@@ -8,10 +8,10 @@ const styles = theme => ({
     },
 });
 
-const WoodPile = ({classes}) => {
+const WoodPile = ({classes, id}) => {
     return(
         <div className={classes.woodPile}>
-            <Card  color='blue'/>
+            <Card id={id} color='blue'/>
         </div>
     );
 };

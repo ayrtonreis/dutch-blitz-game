@@ -35,23 +35,23 @@ let PlayerHeader = ({name = 'Player Name', classes}) => {
 };
 PlayerHeader = withStyles(styles)(PlayerHeader);
 
-let PlayerSpace = ({classes}) => {
+let PlayerSpace = ({classes, id}) => {
     return (
         <div className={classes.space}>
-            <WoodPile/>
-            <PostPile/>
-            <WoodPile/>
+            <WoodPile id={id}/>
+            <PostPile id={id}/>
+            <WoodPile id={id}/>
         </div>
     );
 };
 PlayerSpace = withStyles(styles)(PlayerSpace);
 
 
-const Player = ({classes}) => {
+const Player = ({classes, id}) => {
     return(
         <div className={classes.player}>
             <PlayerHeader/>
-            <PlayerSpace/>
+            <PlayerSpace id={id}/>
         </div>
     );
 };

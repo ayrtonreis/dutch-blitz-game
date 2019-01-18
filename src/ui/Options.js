@@ -1,6 +1,8 @@
 import React from 'react'
+import {connect} from 'react-redux';
 import {withStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import {togglePlayPause} from "../redux/playing";
 
 const styles = theme => ({
     options: {
@@ -14,7 +16,7 @@ const styles = theme => ({
     },
 });
 
-const Options = ({classes}) => {
+let Options = ({classes, playing, playPauseCallback}) => {
     return(
         <div className={classes.options}>
             <Button variant="contained" className={classes.button}>
@@ -23,11 +25,34 @@ const Options = ({classes}) => {
             <Button variant="contained" className={classes.button}>
                 Deal Cards
             </Button>
-            <Button variant="contained" className={classes.button}>
-                Play/Pause
+            <Button
+                variant="contained"
+                className={classes.button}
+                onClick={playPauseCallback}
+            >
+                {playing
+                    ? "Pause"
+                    : "Play"
+                }
             </Button>
         </div>
     );
 };
 
-export default withStyles(styles)(Options);
+Options = withStyles(styles)(Options);
+
+function mapStateToProps(state) {
+    return {
+        playing: state.playing,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        playPauseCallback: () => dispatch(togglePlayPause()),
+    }
+}
+
+Options = connect(mapStateToProps, mapDispatchToProps)(Options);
+
+export default Options

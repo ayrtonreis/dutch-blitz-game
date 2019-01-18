@@ -10,7 +10,7 @@ function addToDutchPile(piles, card, position){
 
 function addToWoodPile(pile, cards){
     // return new wood pile
-    return [...piles, ...cards]
+    return [...pile, ...cards]
 }
 
 function addToPostPile(piles, card, position){
@@ -75,7 +75,120 @@ const removeFrom = {
     'POST_PILE': removeFromPostPile,
 };
 
-function cards(state, action){
+// function cardsReducer(state, action){
+//     /*
+//         state is of the form:
+//         {
+//             dutchPile: {}
+//             playerData: {}
+//         }
+//      */
+//
+//     switch(action.type) {
+//         case 'ADD_CARD_TO_DUTCH_PILE':
+//             const dutchPile = state.dutchPile;
+//             const playerData = state.playerData;
+//             const pos = action.position;
+//             const currentCard = dutchPile[];
+//             const playedCard = action.card;
+//
+//             try{
+//                 if( currentCard.color === playedCard.color &&
+//                     playedCard.number - currentCard.number === 1){
+//                         const newDutchPile = [...dutchPile];
+//                         newDutchPile[pos] = playedCard;
+//
+//                         const newPlayerData =  {
+//                                                     ...playerData,
+//
+//
+//                                                 };
+//
+//                         return {newDutchPile, newPlayerData};
+//                 }
+//             }
+//             catch(err){}
+//
+//         default:
+//             return state;
+//     }
+// }
+
+const initialState = {
+    dutchPiles: [],
+
+    player1Data: {
+        nbCardsInDutchPiles: 0,
+
+        blitzPile: [],
+
+        leftPostPile: [],
+
+        middlePostPile: [],
+
+        rightPostPile: [],
+
+        woodPile: [],
+
+        hand: [],
+
+        origin: null,
+    },
+
+    player2Data: {
+        nbCardsInDutchPiles: 0,
+
+        blitzPile: [],
+
+        leftPostPile: [],
+
+        middlePostPile: [],
+
+        rightPostPile: [],
+
+        woodPile: [],
+
+        hand: []
+    },
+
+    player3Data: {
+        nbCardsInDutchPiles: 0,
+
+        blitzPile: [],
+
+        leftPostPile: [],
+
+        middlePostPile: [],
+
+        rightPostPile: [],
+
+        woodPile: [],
+
+        hand: []
+    },
+
+    player4Data: {
+        nbCardsInDutchPiles: 0,
+
+        blitzPile: [],
+
+        leftPostPile: [],
+
+        middlePostPile: [],
+
+        rightPostPile: [],
+
+        woodPile: [],
+
+        hand: []
+    }
+};
+
+function cardsReducer(state=initialState, action){
+
+    console.log('action', action)
+
+    return state;
     /*
         state is of the form:
         {
@@ -84,56 +197,14 @@ function cards(state, action){
         }
      */
 
-    switch(action.type) {
-        case 'ADD_CARD_TO_DUTCH_PILE':
-            const dutchPile = state.dutchPile;
-            const playerData = state.playerData;
-            const pos = action.position;
-            const currentCard = dutchPile[];
-            const playedCard = action.card;
-
-            try{
-                if( currentCard.color === playedCard.color &&
-                    playedCard.number - currentCard.number === 1){
-                        const newDutchPile = [...dutchPile];
-                        newDutchPile[pos] = playedCard;
-
-                        const newPlayerData =  {
-                                                    ...playerData,
-
-
-                                                };
-
-                        return {newDutchPile, newPlayerData};
-                }
-            }
-            catch(err){}
-
-        default:
-            return state;
-    }
+    // switch(action.type){
+    //     case 'MOVE_CARD_TO_DUTCH_PILE':
+    //         const dutchPile = state.dutchPile;
+    //         const playerData = state.playerData;
+    //         const pos = action.position;
+    //         const origin = action.origin;
+    //
+    // }
 }
 
-function cards(state, action){
-    /*
-        state is of the form:
-        {
-            dutchPile: {}
-            playerData: {}
-        }
-     */
-
-    switch(action.type){
-        case 'MOVE_CARD_TO_DUTCH_PILE':
-            const dutchPile = state.dutchPile;
-            const playerData = state.playerData;
-            const pos = action.position;
-            const origin = action.origin;
-
-
-
-
-    }
-}
-
-export default cards;
+export default cardsReducer;

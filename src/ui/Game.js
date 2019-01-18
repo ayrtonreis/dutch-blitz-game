@@ -2,6 +2,7 @@ import React from 'react'
 import {withStyles} from '@material-ui/core/styles';
 import Options from './Options'
 import Field from './Field'
+import {connect} from 'react-redux';
 
 const styles = {
     game: {
@@ -12,14 +13,24 @@ const styles = {
     },
 };
 
-const Game = ({classes}) => {
+let Game = ({classes, playing}) => {
   return(
       <div className={classes.game}>
-          <Options/>
+          <Options />
 
-          <Field/>
+          <Field playing={playing} />
       </div>
   );
 };
 
-export default withStyles(styles)(Game);
+Game = withStyles(styles)(Game);
+
+function mapStateToProps(state) {
+    return {
+        playing: state.playing,
+    }
+}
+
+Game = connect(mapStateToProps)(Game);
+
+export default Game

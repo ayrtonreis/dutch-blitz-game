@@ -11,12 +11,12 @@ const styles = theme => ({
     },
 });
 
-const WoodPile = ({classes}) => {
+const WoodPile = ({classes, id}) => {
     return(
         <div className={classes.postPile}>
-            <Card  color='red'/>
-            <Card  color='blue'/>
-            <Card  color='green'/>
+            <Card  id={id} color='red'/>
+            <Card  id={id} color='blue'/>
+            <Card  id={id} color='green'/>
         </div>
     );
 };

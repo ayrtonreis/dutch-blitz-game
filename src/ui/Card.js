@@ -1,6 +1,8 @@
 import React from 'react'
+import {connect} from 'react-redux';
 import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames'
+import {testingAction} from '../redux/cards/action'
 
 const styles = theme => ({
     card: {
@@ -29,12 +31,13 @@ const styles = theme => ({
     }
 });
 
-const Card = ({
-              color,
-              gender = 'N',
-              number = '0',
-              classes,
-              onClick,
+let Card = ({
+                color,
+                gender = 'N',
+                number = '0',
+                classes,
+                onClick,
+                playerId,
     }) => {
 
     const mapClasses = {
@@ -54,4 +57,19 @@ const Card = ({
     );
 };
 
-export default withStyles(styles)(Card);
+Card = withStyles(styles)(Card);
+
+function mapStateToProps(state, ownProps){
+    return {};
+}
+
+function mapDispatchToProps(dispatch, ownProps){
+
+    return{
+        onClick: () => {console.log(ownProps); dispatch(testingAction(ownProps.playerId))}
+    }
+}
+
+Card = connect(mapStateToProps, mapDispatchToProps)(Card);
+
+export default Card;

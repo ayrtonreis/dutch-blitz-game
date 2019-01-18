@@ -5,7 +5,7 @@ import DutchSpace from './DutchSpace'
 
 const styles = {
     field: {
-        backgroundColor: '#ffdb96',
+        // backgroundColor: '#ffdb96',
         display: 'grid',
         padding: '10px',
         gridTemplateColumns: '1fr 1fr',
@@ -24,9 +24,9 @@ const styles = {
     },
 };
 
-const Field = ({classes}) => {
+const Field = ({classes, playing}) => {
     return(
-        <div className={classes.field}>
+        <div style={{backgroundColor: playing ? '#81ff79' : '#ffdb96'}} className={classes.field}>
             <Player id={1}/>
             <Player id={2}/>
 
