@@ -1,5 +1,6 @@
 import React from 'react'
 import {withStyles} from '@material-ui/core/styles';
+import classNames from 'classnames'
 
 const styles = theme => ({
     card: {
@@ -44,7 +45,7 @@ const Card = ({
     const classColor = mapClasses[color] ? mapClasses[color] : mapClasses['empty'];
 
     return(
-        <div className={classColor + ' ' + classes.card}>
+        <div className={classNames(classes.card, classColor)}>
             <div className={classes.gender}>{gender}</div>
             <div className={classes.number}>{number}</div>
         </div>
