@@ -2,7 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux';
 import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames'
-import {testingAction} from '../redux/cards/action'
+import {testingAction, cardClicked} from '../redux/cards/action'
+import {colors} from '../utils'
 
 const styles = theme => ({
     card: {
@@ -18,8 +19,11 @@ const styles = theme => ({
     cardBlue: {
         backgroundColor: '#326ca3',
     },
+    cardYellow: {
+        backgroundColor: '#d3c32a',
+    },
     cardEmpty:{
-        backgroundColor: '#575757',
+        backgroundColor: 'rgba(128,128,128,0.4)',
     },
     gender: {
         textAlign: 'center',
@@ -33,17 +37,20 @@ const styles = theme => ({
 
 let Card = ({
                 color,
-                gender = 'N',
-                number = '0',
+                gender,
+                number=0,
+                pileType,
+                pileIndex = null,
                 classes,
                 onClick,
-                playerId,
+                cardOwnerId,
     }) => {
 
     const mapClasses = {
-        red: classes.cardRed,
-        green: classes.cardGreen,
-        blue: classes.cardBlue,
+        [colors.red]: classes.cardRed,
+        [colors.green]: classes.cardGreen,
+        [colors.blue]: classes.cardBlue,
+        [colors.yellow]: classes.cardYellow,
         empty: classes.cardEmpty,
     };
 
@@ -64,9 +71,9 @@ function mapStateToProps(state, ownProps){
 }
 
 function mapDispatchToProps(dispatch, ownProps){
-
+    const {cardOwnerId, pileType, pileIndex} = ownProps;
     return{
-        onClick: () => {console.log(ownProps); dispatch(testingAction(ownProps.playerId))}
+        onClick: () => {console.log(ownProps); dispatch(cardClicked(cardOwnerId, pileType, pileIndex))}
     }
 }
 

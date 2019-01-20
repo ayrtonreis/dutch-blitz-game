@@ -33,4 +33,4 @@ function mapStateToProps(state) {
 
 Game = connect(mapStateToProps)(Game);
 
-export default Game
+export default Game;

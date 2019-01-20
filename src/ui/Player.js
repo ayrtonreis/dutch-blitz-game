@@ -2,7 +2,7 @@ import React from 'react'
 import {withStyles} from '@material-ui/core/styles';
 import WoodPile from './WoodPile'
 import PostPile from './PostPile'
-//import BlitzPile from './BlitzPile'
+import BlitzPile from './BlitzPile'
 
 const styles = {
     player: {
@@ -38,19 +38,19 @@ PlayerHeader = withStyles(styles)(PlayerHeader);
 let PlayerSpace = ({classes, id}) => {
     return (
         <div className={classes.space}>
-            <WoodPile id={id}/>
-            <PostPile id={id}/>
-            <WoodPile id={id}/>
+            <WoodPile cardOwnerId={id}/>
+            <PostPile cardOwnerId={id}/>
+            <BlitzPile cardOwnerId={id}/>
         </div>
     );
 };
 PlayerSpace = withStyles(styles)(PlayerSpace);
 
 
-const Player = ({classes, id}) => {
+const Player = ({classes, id, name}) => {
     return(
         <div className={classes.player}>
-            <PlayerHeader/>
+            <PlayerHeader name={name}/>
             <PlayerSpace id={id}/>
         </div>
     );

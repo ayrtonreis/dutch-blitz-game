@@ -1,6 +1,7 @@
 import React from 'react'
 import {withStyles} from '@material-ui/core/styles';
 import Card from './Card'
+import pileTypes from "../pileTypes";
 
 const styles = theme => ({
     dutchPile: {
@@ -9,10 +10,11 @@ const styles = theme => ({
     },
 });
 
-const DutchPile = ({classes}) => {
+//pileType={pileTypes.DUTCH_PILE}
+const DutchPile = ({classes, pileIndex}) => {
     return(
         <div className={classes.dutchPile}>
-
+            <Card pileType={pileTypes.DUTCH_PILE} pileIndex={pileIndex}/>
         </div>
     );
 };

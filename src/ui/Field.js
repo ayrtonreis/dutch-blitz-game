@@ -26,14 +26,14 @@ const styles = {
 
 const Field = ({classes, playing}) => {
     return(
-        <div style={{backgroundColor: playing ? '#81ff79' : '#ffdb96'}} className={classes.field}>
-            <Player id={1}/>
-            <Player id={2}/>
+        <div style={{backgroundColor: playing ? '#b3b3b3' : '#ffdb96'}} className={classes.field}>
+            <Player id={1} name='BOT 1'/>
+            <Player id={2} name='BOT 2'/>
 
             <DutchSpace/>
 
-            <Player id={3}/>
-            <Player id={4}/>
+            <Player id={3} name='BOT 3'/>
+            <Player id={4} name={'ME'}/>
         </div>
     );
 };

@@ -1,4 +1,3 @@
-
 export const TOGGLE_PLAY_PAUSE = 'TOGGLE_PLAY_PAUSE';
 
 export function togglePlayPause() {
@@ -6,7 +5,6 @@ export function togglePlayPause() {
         type: TOGGLE_PLAY_PAUSE,
     }
 }
-
 
 export function playingReducer(state = false, action) {
 

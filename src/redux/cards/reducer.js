@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux'
+import pileTypes from '../../pileTypes'
+import {actionList} from './action'
 
 function addToDutchPile(piles, card, position){
     const newPiles = [...piles];
@@ -69,6 +71,15 @@ function removeFromPostPile(piles, position){
     });
 }
 
+function selectCard(playerId, pileType){
+
+}
+
+function noop(state){
+    console.log('NO OP');
+    return state;
+}
+
 const removeFrom = {
     'BLITZ_PILE': removeFromBlitzPile,
     'WOOD_PILE': removeFromWoodPile,
@@ -120,75 +131,150 @@ const initialState = {
     player1Data: {
         nbCardsInDutchPiles: 0,
 
-        blitzPile: [],
+        [pileTypes.BLITZ_PILE]: [],
 
-        leftPostPile: [],
+        [pileTypes.LEFT_POST_PILE]: [],
 
-        middlePostPile: [],
+        [pileTypes.MIDDLE_POST_PILE]: [],
 
-        rightPostPile: [],
+        [pileTypes.RIGHT_POST_PILE]: [],
 
-        woodPile: [],
+        [pileTypes.WOOD_PILE]: [],
 
         hand: [],
 
-        origin: null,
+        selectedCardOrigin: null,
     },
 
     player2Data: {
         nbCardsInDutchPiles: 0,
 
-        blitzPile: [],
+        [pileTypes.BLITZ_PILE]: [],
 
-        leftPostPile: [],
+        [pileTypes.LEFT_POST_PILE]: [],
 
-        middlePostPile: [],
+        [pileTypes.MIDDLE_POST_PILE]: [],
 
-        rightPostPile: [],
+        [pileTypes.RIGHT_POST_PILE]: [],
 
-        woodPile: [],
+        [pileTypes.WOOD_PILE]: [],
 
-        hand: []
+        hand: [],
+
+        selectedCardOrigin: null,
     },
 
     player3Data: {
         nbCardsInDutchPiles: 0,
 
-        blitzPile: [],
+        [pileTypes.BLITZ_PILE]: [],
 
-        leftPostPile: [],
+        [pileTypes.LEFT_POST_PILE]: [],
 
-        middlePostPile: [],
+        [pileTypes.MIDDLE_POST_PILE]: [],
 
-        rightPostPile: [],
+        [pileTypes.RIGHT_POST_PILE]: [],
 
-        woodPile: [],
+        [pileTypes.WOOD_PILE]: [],
 
-        hand: []
+        hand: [],
+
+        selectedCardOrigin: null,
     },
 
     player4Data: {
         nbCardsInDutchPiles: 0,
 
-        blitzPile: [],
+        [pileTypes.BLITZ_PILE]: [],
 
-        leftPostPile: [],
+        [pileTypes.LEFT_POST_PILE]: [],
 
-        middlePostPile: [],
+        [pileTypes.MIDDLE_POST_PILE]: [],
 
-        rightPostPile: [],
+        [pileTypes.RIGHT_POST_PILE]: [],
 
-        woodPile: [],
+        [pileTypes.WOOD_PILE]: [],
 
-        hand: []
+        hand: [],
+
+        selectedCardOrigin: null,
     }
 };
 
+function buildPlayerData(deck){
+
+    const postPileArray = deck.slice(0, 3);
+    const blitzArray = deck.slice(3, 13);
+    const handArray = deck.slice(14);
+
+    return ({
+        nbCardsInDutchPiles: 0,
+
+        [pileTypes.BLITZ_PILE]: blitzArray,
+
+        [pileTypes.LEFT_POST_PILE]: [postPileArray[0]],
+
+        [pileTypes.MIDDLE_POST_PILE]: [postPileArray[1]],
+
+        [pileTypes.RIGHT_POST_PILE]: [postPileArray[2]],
+
+        [pileTypes.WOOD_PILE]: [],
+
+        hand: handArray,
+
+        selectedCardOrigin: null,
+    });
+}
+
 function cardsReducer(state=initialState, action){
+    const newState = {...state};
 
-    console.log('action', action)
+    switch(action.type){
+        case actionList.DEAL_CARDS:
+            console.log('%c DEAL_CARDS! ', 'background: #888; color: #ffffff');
 
-    return state;
+            const playerDataKeys = ['player1Data', 'player2Data', 'player3Data', 'player4Data'];
+
+            playerDataKeys.forEach((playerDataKey, index) => {
+                newState[playerDataKey] = buildPlayerData(action.decks[index]);
+            });
+
+            console.log(newState);
+
+            return newState;
+
+        case actionList.SELECT_CARD:
+            console.log('%c SELECT_CARD! ', 'background: #888; color: #ffffff');
+            const playerDataKey = `player${action.playerId}Data`;
+            const newPlayerData = {...newState[playerDataKey]};
+
+            newPlayerData.selectedCardOrigin = action.pileType;
+            newState[playerDataKey] = newPlayerData;
+
+            console.log(newState);
+            return newState;
+
+        case actionList.MOVE_CARD_TO_DUTCH_PILE:
+
+            return newState;
+
+        case actionList.MOVE_CARD_TO_POST_PILE:
+
+            return newState;
+
+        case actionList.MOVE_CARD_TO_WOOD_PILE:
+
+            return newState;
+
+        default:
+            return state;
+
+    }
+
+    console.log('action', action);
+    return newState;
+
+    //return noop(state);
     /*
         state is of the form:
         {
