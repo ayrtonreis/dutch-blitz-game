@@ -3,6 +3,7 @@ import {withStyles} from '@material-ui/core/styles';
 import Card from './Card'
 import pileTypes from '../pileTypes'
 import {connect} from "react-redux";
+import {emptyCardObj} from '../utils'
 
 const styles = theme => ({
     blitzPile: {
@@ -27,8 +28,6 @@ BlitzPile = withStyles(styles)(BlitzPile);
 
 function mapStateToProps(state, ownProps) {
     const playerData = state.cards[`player${ownProps.cardOwnerId}Data`];
-
-    const emptyCardObj = {color: null, gender: null, number: 0};
 
     // get the last card from the blitz pile
     // in case there is no card, then fill it with emptyCardObj

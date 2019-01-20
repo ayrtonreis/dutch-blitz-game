@@ -3,6 +3,7 @@ import {withStyles} from '@material-ui/core/styles';
 import Card from './Card'
 import pileTypes from "../pileTypes";
 import {connect} from "react-redux";
+import {emptyCardObj} from '../utils'
 
 const styles = theme => ({
     postPile: {
@@ -49,8 +50,6 @@ PostPile = withStyles(styles)(PostPile);
 
 function mapStateToProps(state, ownProps) {
     const playerData = state.cards[`player${ownProps.cardOwnerId}Data`];
-
-    const emptyCardObj = {color: null, gender: null, number: 0};
 
     // get the last card from each of the post piles
     // in case there is no card, then fill it with emptyCardObj

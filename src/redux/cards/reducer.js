@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import pileTypes from '../../pileTypes'
 import {actionList} from './action'
+import {emptyCardObj} from '../../utils'
 
 function addToDutchPile(piles, card, position){
     const newPiles = [...piles];
@@ -229,6 +230,8 @@ function buildPlayerData(deck){
 function cardsReducer(state=initialState, action){
     const newState = {...state};
 
+    let playerDataKey, newPlayerData;
+
     switch(action.type){
         case actionList.DEAL_CARDS:
             console.log('%c DEAL_CARDS! ', 'background: #888; color: #ffffff');
@@ -245,8 +248,8 @@ function cardsReducer(state=initialState, action){
 
         case actionList.SELECT_CARD:
             console.log('%c SELECT_CARD! ', 'background: #888; color: #ffffff');
-            const playerDataKey = `player${action.playerId}Data`;
-            const newPlayerData = {...newState[playerDataKey]};
+            playerDataKey = `player${action.playerId}Data`;
+            newPlayerData = {...newState[playerDataKey]};
 
             newPlayerData.selectedCardOrigin = action.pileType;
             newState[playerDataKey] = newPlayerData;
@@ -255,7 +258,16 @@ function cardsReducer(state=initialState, action){
             return newState;
 
         case actionList.MOVE_CARD_TO_DUTCH_PILE:
+            console.log('%c MOVE_CARD_TO_DUTCH_PILE! ', 'background: #888; color: #ffffff');
 
+            playerDataKey = `player${action.playerId}Data`;
+            newPlayerData = {...newState[playerDataKey]};
+
+            const card = newPlayerData[newPlayerData.selectedCardOrigin].slice(-1)[0];
+
+            newState.dutchPiles = addToDutchPile(state.dutchPiles, card, action.dutchPileIndex);
+
+            console.log(newState);
             return newState;
 
         case actionList.MOVE_CARD_TO_POST_PILE:
@@ -263,10 +275,11 @@ function cardsReducer(state=initialState, action){
             return newState;
 
         case actionList.MOVE_CARD_TO_WOOD_PILE:
-
+            console.log('MOVE_CARD_TO_WOOD_PILE');
             return newState;
 
         default:
+            console.log("%c NO OP", "color: #00aa00")
             return state;
 
     }

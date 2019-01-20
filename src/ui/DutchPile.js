@@ -11,7 +11,7 @@ const styles = theme => ({
 });
 
 //pileType={pileTypes.DUTCH_PILE}
-const DutchPile = ({classes, pileIndex}) => {
+const DutchPile = ({classes, card, pileIndex}) => {
     return(
         <div className={classes.dutchPile}>
             <Card pileType={pileTypes.DUTCH_PILE} pileIndex={pileIndex}/>

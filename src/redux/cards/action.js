@@ -1,5 +1,10 @@
 import pileTypes from '../../pileTypes'
-import {generateCardsArray, shuffleArray, colors} from '../../utils'
+import {
+    generateCardsArray,
+    shuffleArray,
+    colors,
+    emptyCardObj
+} from '../../utils'
 
 const validPileTypesToRemoveFrom = [
     pileTypes.WOOD_PILE,
@@ -57,41 +62,86 @@ export const dealCards = (decks) => ({
     decks
 });
 
+function checkMovementPostPile(card, pile){
+    const lastCard = pile.slice(-1)[0] || emptyCardObj;
+
+    if(lastCard.number === 0)
+        return true;
+
+    return (lastCard.gender === card.gender && lastCard.number - card.number === 1);
+}
+
+function checkMovementDutchPile(card, pile){
+    const lastCard = pile || emptyCardObj;
+
+    if(lastCard.number === 0 && card.number === 1)
+        return true;
+
+    return (lastCard.gender === card.gender &&  card.number - lastCard.number === 1);
+}
+
 export const moveCardIfValid = (playerId, cardOwnerId, pileType, pileIndex) => {
   return (dispatch, getState) => {
       const { cards } = getState();
       const {[`player${playerId}Data`]: playerData} = cards;
 
-      if(playerId === cardOwnerId && pileType !== pileTypes.DUTCH_PILE){
+      if(pileType === pileTypes.DUTCH_PILE){
+
+          const originPile = playerData.selectedCardOrigin;
+          const card = playerData[originPile].slice(-1)[0] || emptyCardObj;
+
+          console.warn(checkMovementDutchPile(card, cards.dutchPiles[pileIndex]));
+
+          if(checkMovementDutchPile(card, cards.dutchPiles[pileIndex]))
+              dispatch(moveCardToDutchPile(playerId, pileIndex));
+          else
+              dispatch(noop());
+      }
+      else if(playerId === cardOwnerId){
+          const originPile = playerData.selectedCardOrigin;
+          const card = playerData[originPile].slice(-1)[0] || emptyCardObj;
+
+          console.log('%c SelectedCard: ', 'background: #888; color: #ffff00', card);
+
           switch(pileType){
               case pileTypes.WOOD_PILE:
-
+                  dispatch(noop());
                   break;
               case pileTypes.LEFT_POST_PILE:
-
+                  if(checkMovementPostPile(card, playerData[pileTypes.LEFT_POST_PILE]))
+                      dispatch(moveCardToPostPile(playerId, pileTypes.LEFT_POST_PILE));
+                  else
+                      dispatch(noop());
                   break;
               case pileTypes.MIDDLE_POST_PILE:
-
+                  if(checkMovementPostPile(card, playerData[pileTypes.MIDDLE_POST_PILE]))
+                      dispatch(moveCardToPostPile(playerId, pileTypes.MIDDLE_POST_PILE));
+                  else
+                      dispatch(noop());
                   break;
               case pileTypes.RIGHT_POST_PILE:
-
+                  if(checkMovementPostPile(card, playerData[pileTypes.RIGHT_POST_PILE]))
+                      dispatch(moveCardToPostPile(playerId, pileTypes.RIGHT_POST_PILE));
+                  else
+                      dispatch(noop());
                   break;
               default:
                   dispatch(noop());
           }
       }
-      else if(pileType === pileTypes.DUTCH_PILE){
-          dispatch(moveCardToDutchPile(playerId, pileIndex));
-      }
       else{
           dispatch(noop());
       }
+
   };
 };
 
 export const selectOriginCardIfValid = (playerId, cardOwnerId, pileType) => {
-    return(dispatch) => {
-        if(playerId === cardOwnerId && validPileTypesToRemoveFrom.includes(pileType))
+    return(dispatch, getState) => {
+        if( playerId === cardOwnerId &&
+            getState().cards[`player${playerId}Data`][pileType].length > 0 &&
+            validPileTypesToRemoveFrom.includes(pileType)
+        )
             dispatch(selectCard(playerId, pileType));
         else
             dispatch(noop());

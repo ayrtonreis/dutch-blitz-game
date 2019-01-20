@@ -19,7 +19,7 @@ const styles = {
 const DutchSpace = ({classes}) => {
     return(
         <div className={classes.dutchSpace}>
-            {Array(20).fill().map((v,index) => <DutchPile key={index} pileIndex={index}/>)}
+            {Array(20).fill().map((v,index) => <DutchPile card={1} key={index} pileIndex={index}/>)}
         </div>
     );
 };

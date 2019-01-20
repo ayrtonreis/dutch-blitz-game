@@ -10,6 +10,12 @@ export const colors = {
     yellow: 'Y'
 };
 
+export const emptyCardObj = {
+    color: null,
+    gender: null,
+    number: 0
+};
+
 const NUMBER_OF_CARDS = 40;
 
 export function shuffleArray(array) {
