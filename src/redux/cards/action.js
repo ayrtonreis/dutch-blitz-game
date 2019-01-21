@@ -33,9 +33,9 @@ export const testingAction = (cardOwnerId) => ({
 
 });
 
-export const clearSelection = (cardOwnerId) => ({
+export const clearSelection = (playerId) => ({
     type: actionList.CLEAR_SELECTION,
-    cardOwnerId
+    playerId
 
 });
 
@@ -111,12 +111,12 @@ export const moveCardIfValid = (playerId, cardOwnerId, pileType, pileIndex) => {
           const originPile = playerData.selectedCardOrigin;
           const card = playerData[originPile].slice(-1)[0] || emptyCardObj;
 
-          console.warn(checkMovementDutchPile(card, cards.dutchPiles[pileIndex]));
+          // console.warn(checkMovementDutchPile(card, cards.dutchPiles[pileIndex]));
 
           if(checkMovementDutchPile(card, cards.dutchPiles[pileIndex]))
               dispatch(moveCardToDutchPile(playerId, pileIndex));
           else
-              dispatch(clearSelection(cardOwnerId));
+              dispatch(clearSelection(playerId));
       }
       else if(playerId === cardOwnerId){
           const originPile = playerData.selectedCardOrigin;
@@ -129,47 +129,58 @@ export const moveCardIfValid = (playerId, cardOwnerId, pileType, pileIndex) => {
                   if(checkMovementPostPile(card, playerData[pileTypes.LEFT_POST_PILE]))
                       dispatch(moveCardToPostPile(playerId, pileTypes.LEFT_POST_PILE));
                   else
-                      dispatch(clearSelection(cardOwnerId));
+                      dispatch(clearSelection(playerId));
                   break;
               case pileTypes.MIDDLE_POST_PILE:
                   if(checkMovementPostPile(card, playerData[pileTypes.MIDDLE_POST_PILE]))
                       dispatch(moveCardToPostPile(playerId, pileTypes.MIDDLE_POST_PILE));
                   else
-                      dispatch(clearSelection(cardOwnerId));
+                      dispatch(clearSelection(playerId));
                   break;
               case pileTypes.RIGHT_POST_PILE:
                   if(checkMovementPostPile(card, playerData[pileTypes.RIGHT_POST_PILE]))
                       dispatch(moveCardToPostPile(playerId, pileTypes.RIGHT_POST_PILE));
                   else
-                      dispatch(clearSelection(cardOwnerId));
+                      dispatch(clearSelection(playerId));
                   break;
               default:
-                  dispatch(clearSelection(cardOwnerId));
+                  dispatch(clearSelection(playerId));
           }
       }
       else{
-          dispatch(clearSelection(cardOwnerId));
+          dispatch(clearSelection(playerId));
       }
 
   };
 };
 
-export const selectOriginCardIfValid = (playerId, cardOwnerId, pileType) => {
+export const selectOriginCardIfValid = (playerId, cardOwnerId, pileType, isBot) => {
+    console.warn('1234901237-0491283-4908123-094812-305712039856120985612-3846-123874-0123947-1203947')
 
-    console.log('select card origin!');
-    return(dispatch, getState) => {
+    //console.log('select card origin!');
+    return (dispatch, getState) => {
+        
+        console.warn(getState(),playerId, cardOwnerId, pileType)
+        console.warn(getState().cards[`player${playerId}Data`])
+        console.warn(getState().cards[`player${playerId}Data`][pileType])
+        console.warn(getState().cards[`player${playerId}Data`][pileType].length)
         if( playerId === cardOwnerId &&
             getState().cards[`player${playerId}Data`][pileType].length > 0 &&
             validPileTypesToRemoveFrom.includes(pileType)
-        )
+        ) {
+
+            console.warn('asdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfas')
             dispatch(selectCard(playerId, pileType));
-        else
+        }
+        else {
+            console.warn('qwerqwerqwerqwerqwerqwerqweqwerqwerqwerqwerqwerqwerqweqwerqwerqwerqwerqwerqwerqweqwerqwerqwerqwerqwerqwerqwe')
             dispatch(noop());
+        }
     }
 };
 
-export const cardClicked = (cardOwnerId, pileType, pileIndex) => {
-    console.log("inside cardCliked thunk");
+export const cardClicked = (cardOwnerId, pileType, pileIndex, isBot) => {
+    //console.log("inside cardCliked thunk", cardOwnerId, pileType, pileIndex);
 
     return (dispatch, getState) => {
         const { currentPlayerId, cards, playing } = getState();
@@ -209,6 +220,54 @@ export const plusWoodPileClicked = (cardOwnerId) => {
     }
 };
 
+export const cardClickedByBot = (botPlayerId, cardOwnerId, pileType, pileIndex) => {
+    console.log('first dispatch')
+    console.log("CARD CLICKED BY BOT", cardOwnerId, pileType, pileIndex);
+
+    return (dispatch, getState) => {
+        const { cards, playing } = getState();
+        const prevSelectedCard = cards[`player${botPlayerId}Data`].selectedCardOrigin;
+
+        if(!playing){
+            console.log("no op")
+            dispatch(noop());
+        }
+        // If the player is selecting the origin of the play movement
+        else if(prevSelectedCard === null){
+            console.log("bot selected card")
+            console.log(botPlayerId)
+            console.log(cards[`player${botPlayerId}Data`])
+            console.log(cards[`player${botPlayerId}Data`].selectedCardOrigin)
+            dispatch(selectOriginCardIfValid(botPlayerId, cardOwnerId, pileType));
+        }
+        else{
+            console.log("bot moved card")
+            dispatch(moveCardIfValid(botPlayerId, cardOwnerId, pileType, pileIndex));
+        }
+    };
+};
+
+export const plusWoodPileClickedByBot = (botPlayerId, cardOwnerId) => {
+
+    return (dispatch, getState) => {
+        const { cards, playing } = getState();
+
+        if(!playing)
+            dispatch(noop());
+        else if(botPlayerId === cardOwnerId){
+            const playerHand = cards[`player${botPlayerId}Data`].hand;
+
+            if(playerHand.length)
+                dispatch(moveCardsToWoodPile(cardOwnerId));
+            else
+                dispatch(moveCardsToHand(cardOwnerId));
+        }
+        else{
+            dispatch(noop());
+        }
+    }
+};
+
 export const shuffleAndDealCards = () => {
 
     const decks = shuffleArray(Array(4).fill().map(() => shuffleArray(generateCardsArray())));
@@ -217,3 +276,23 @@ export const shuffleAndDealCards = () => {
         dispatch(dealCards(decks));
     }
 };
+
+
+
+
+
+export function dispatchClickOnTwoPiles(playerNumber, pileType, pileIndex) {
+    return (dispatch, getState) => {
+        //console.log(playerNumber);
+        dispatch(cardClickedByBot(playerNumber, playerNumber, pileType))
+        // .then(
+        //     () => {
+                if (!!getState().cards[`player${playerNumber}Data`].selectedCardOrigin)
+                    dispatch(cardClickedByBot(playerNumber, playerNumber, pileTypes.DUTCH_PILE, pileIndex))
+                else
+                    console.log('NOOOOO dispatch')
+            // }
+            // () => dispatch(cardClickedByBot(playerNumber, playerNumber, pileTypes.DUTCH_PILE, pileIndex))
+        // )
+    }
+}

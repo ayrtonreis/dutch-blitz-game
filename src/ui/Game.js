@@ -2,6 +2,7 @@ import React from 'react'
 import {withStyles} from '@material-ui/core/styles';
 import Options from './Options'
 import Field from './Field'
+import Bots from './Bots'
 import {connect} from 'react-redux';
 
 const styles = {
@@ -19,6 +20,8 @@ let Game = ({classes, playing}) => {
           <Options />
 
           <Field playing={playing} />
+
+          <Bots />
       </div>
   );
 };

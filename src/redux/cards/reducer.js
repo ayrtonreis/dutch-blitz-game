@@ -21,54 +21,6 @@ function addToPostPile(pile, card){
     return [...pile, card];
 }
 
-// function removeFromBlitzPile(pile){
-//     // return {newBlitzPile, removedCard}
-//     if(pile.length > 0)
-//         return ({
-//             pile: pile.slice(0, -1),
-//             card: pile[pile.length-1]
-//         });
-//     return ({
-//         pile: pile,
-//         card: null
-//     })
-// }
-//
-// function removeFromWoodPile(pile){
-//     // {newWoodPile, card}
-//     if(pile.length > 0)
-//         return ({
-//             pile: pile.slice(0, -1),
-//             card: pile[pile.length-1]
-//         });
-//     return ({
-//         pile: pile,
-//         card: null
-//     })
-// }
-//
-// function removeFromPostPile(pile, position){
-//     let takenCard = null;
-//
-//     const newPiles = piles.map((pile, index) => {
-//         if(index === position && piles.length > 0){
-//             takenCard = pile[pile.length-1];
-//             return pile.slice(0, -1);
-//         }
-//         return pile;
-//     });
-//
-//     // {newPostPiles, card}
-//     return ({
-//         piles: newPiles,
-//         card: takenCard
-//     });
-// }
-
-function selectCard(playerId, pileType){
-
-}
-
 function noop(state){
     console.log('NO OP');
     return state;
@@ -77,45 +29,6 @@ function noop(state){
 function removeTopCards(pile, numberOfCards){
     return pile.slice(0, -numberOfCards)
 }
-
-// function cardsReducer(state, action){
-//     /*
-//         state is of the form:
-//         {
-//             dutchPile: {}
-//             playerData: {}
-//         }
-//      */
-//
-//     switch(action.type) {
-//         case 'ADD_CARD_TO_DUTCH_PILE':
-//             const dutchPile = state.dutchPile;
-//             const playerData = state.playerData;
-//             const pos = action.position;
-//             const currentCard = dutchPile[];
-//             const playedCard = action.card;
-//
-//             try{
-//                 if( currentCard.color === playedCard.color &&
-//                     playedCard.number - currentCard.number === 1){
-//                         const newDutchPile = [...dutchPile];
-//                         newDutchPile[pos] = playedCard;
-//
-//                         const newPlayerData =  {
-//                                                     ...playerData,
-//
-//
-//                                                 };
-//
-//                         return {newDutchPile, newPlayerData};
-//                 }
-//             }
-//             catch(err){}
-//
-//         default:
-//             return state;
-//     }
-// }
 
 const initialState = {
     dutchPiles: [],
@@ -227,6 +140,21 @@ function cardsReducer(state=initialState, action){
         case actionList.RESET_CARDS:
             return initialState;
 
+        case actionList.CLEAR_SELECTION:
+            console.log('%c CLEAR_SELECTION! ', 'background: #888; color: #ffffff');
+
+            playerDataKey = `player${action.playerId}Data`;
+            newPlayerData = {...newState[playerDataKey]};
+
+            //console.warn(action.playerId);
+
+            newPlayerData.selectedCardOrigin = null;
+            newState[playerDataKey] = newPlayerData;
+
+            //console.log(newState);
+            return newState;
+
+            return initialState;
         case actionList.DEAL_CARDS:
             console.log('%c DEAL_CARDS! ', 'background: #888; color: #ffffff');
 
@@ -236,7 +164,9 @@ function cardsReducer(state=initialState, action){
                 newState[playerDataKey] = buildPlayerData(action.decks[index]);
             });
 
-            console.log(newState);
+            newState.dutchPiles = [];
+
+            //console.log(newState);
 
             return newState;
 
@@ -249,12 +179,12 @@ function cardsReducer(state=initialState, action){
             newPlayerData.selectedCardOrigin = action.pileType;
             newState[playerDataKey] = newPlayerData;
 
-            console.log(newState);
+            //console.log(newState);
             return newState;
 
         case actionList.MOVE_CARDS_TO_WOOD_PILE:
             console.log('%c MOVE_CARDS_TO_WOOD_PILE! ', 'background: #888; color: #ffffff');
-            console.log('State before', state);
+            //console.log('State before', state);
 
             playerDataKey = `player${action.playerId}Data`;
             newPlayerData = {...newState[playerDataKey]};
@@ -268,7 +198,7 @@ function cardsReducer(state=initialState, action){
 
             newState[playerDataKey] = newPlayerData;
 
-            console.log('State after', newState);
+            //console.log('State after', newState);
 
             return newState;
 
@@ -283,11 +213,12 @@ function cardsReducer(state=initialState, action){
 
             newPlayerData[selectedCardOrigin] = removeTopCards(newPlayerData[selectedCardOrigin], 1);
             newPlayerData.selectedCardOrigin = null;
+            newPlayerData.nbCardsInDutchPiles = newPlayerData.nbCardsInDutchPiles + 1;
 
             newState[playerDataKey] = newPlayerData;
             newState.dutchPiles = addToDutchPile(state.dutchPiles, card, action.dutchPileIndex);
 
-            console.log(newState);
+            //console.log(newState);
             return newState;
 
         case actionList.MOVE_CARD_TO_POST_PILE:
@@ -307,7 +238,7 @@ function cardsReducer(state=initialState, action){
             newState[playerDataKey] = newPlayerData;
             //newState.dutchPiles = addToDutchPile(state.dutchPiles, card, action.dutchPileIndex);
 
-            console.log(newState);
+            //console.log(newState);
             return newState;
 
         case actionList.MOVE_CARDS_TO_HAND:
@@ -324,7 +255,7 @@ function cardsReducer(state=initialState, action){
 
             newState[playerDataKey] = newPlayerData;
 
-            console.log('Player after', newPlayerData);
+            //console.log('Player after', newPlayerData);
 
             return newState;
 
@@ -334,26 +265,7 @@ function cardsReducer(state=initialState, action){
 
     }
 
-    console.log('action', action);
     return newState;
-
-    //return noop(state);
-    /*
-        state is of the form:
-        {
-            dutchPile: {}
-            playerData: {}
-        }
-     */
-
-    // switch(action.type){
-    //     case 'MOVE_CARD_TO_DUTCH_PILE':
-    //         const dutchPile = state.dutchPile;
-    //         const playerData = state.playerData;
-    //         const pos = action.position;
-    //         const origin = action.origin;
-    //
-    // }
 }
 
 export default cardsReducer;
