@@ -89,7 +89,7 @@ function checkMovementPostPile(card, pile){
     if(lastCard.number === 0)
         return true;
 
-    return (lastCard.gender === card.gender && lastCard.number - card.number === 1);
+    return (lastCard.gender !== card.gender && lastCard.number - card.number === 1);
 }
 
 function checkMovementDutchPile(card, pile){
