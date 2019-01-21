@@ -98,7 +98,7 @@ function checkMovementDutchPile(card, pile){
     if(lastCard.number === 0 && card.number === 1)
         return true;
 
-    return (lastCard.gender === card.gender &&  card.number - lastCard.number === 1);
+    return (lastCard.color === card.color &&  card.number - lastCard.number === 1);
 }
 
 export const moveCardIfValid = (playerId, cardOwnerId, pileType, pileIndex) => {
