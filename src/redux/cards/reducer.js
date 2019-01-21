@@ -236,6 +236,9 @@ function cardsReducer(state=initialState, action){
                 newState[playerDataKey] = buildPlayerData(action.decks[index]);
             });
 
+            // todo check if this works
+            newState.dutchPiles = [];
+
             console.log(newState);
 
             return newState;
