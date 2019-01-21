@@ -27,5 +27,4 @@ let DutchSpace = ({classes}) => {
 DutchSpace = withStyles(styles)(DutchSpace);
 
 
-
 export default DutchSpace;

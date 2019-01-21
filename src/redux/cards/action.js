@@ -155,7 +155,6 @@ export const moveCardIfValid = (playerId, cardOwnerId, pileType, pileIndex) => {
 };
 
 export const selectOriginCardIfValid = (playerId, cardOwnerId, pileType, isBot) => {
-    console.warn('1234901237-0491283-4908123-094812-305712039856120985612-3846-123874-0123947-1203947')
 
     //console.log('select card origin!');
     return (dispatch, getState) => {
@@ -169,11 +168,10 @@ export const selectOriginCardIfValid = (playerId, cardOwnerId, pileType, isBot) 
             validPileTypesToRemoveFrom.includes(pileType)
         ) {
 
-            console.warn('asdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfasasdfasdfas')
             dispatch(selectCard(playerId, pileType));
         }
         else {
-            console.warn('qwerqwerqwerqwerqwerqwerqweqwerqwerqwerqwerqwerqwerqweqwerqwerqwerqwerqwerqwerqweqwerqwerqwerqwerqwerqwerqwe')
+
             dispatch(noop());
         }
     }
@@ -276,9 +274,6 @@ export const shuffleAndDealCards = () => {
         dispatch(dealCards(decks));
     }
 };
-
-
-
 
 
 export function dispatchClickOnTwoPiles(playerNumber, pileType, pileIndex) {

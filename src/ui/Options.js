@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {withStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import {shuffleAndDealCards, resetCards} from "../redux/cards/action";
-import {togglePlayPause} from "../redux/playing";
+import {togglePlayPause, selectIsPlaying} from "../redux/playing";
 
 const styles = theme => ({
     options: {
@@ -52,7 +52,7 @@ Options = withStyles(styles)(Options);
 
 function mapStateToProps(state) {
     return {
-        playing: state.playing,
+        playing: selectIsPlaying(state),
     }
 }
 

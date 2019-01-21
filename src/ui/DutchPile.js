@@ -3,7 +3,7 @@ import {withStyles} from '@material-ui/core/styles';
 import Card from './Card'
 import pileTypes from "../pileTypes";
 import {emptyCardObj} from '../utils'
-import {cardClicked} from "../redux/cards/action";
+import {selectLastCardInDutchPile} from "../redux/cards/selector";
 import {connect} from "react-redux";
 
 const styles = theme => ({
@@ -30,10 +30,8 @@ let DutchPile = ({classes, card, pileIndex}) => {
 DutchPile = withStyles(styles)(DutchPile)
 
 function mapStateToProps(state, {pileIndex}){
-    const card = state.cards.dutchPiles[pileIndex] || emptyCardObj;
-
     return {
-        card
+        card: selectLastCardInDutchPile(state, pileIndex)
     };
 }
 

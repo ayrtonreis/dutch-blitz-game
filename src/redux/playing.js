@@ -13,3 +13,7 @@ export function playingReducer(state = false, action) {
 
     return state;
 }
+
+export function selectIsPlaying(state) {
+    return state.playing;
+}
