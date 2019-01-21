@@ -5,6 +5,7 @@ import {
     colors,
     emptyCardObj
 } from '../../utils'
+import {TOGGLE_PLAY_PAUSE} from "../playing";
 
 const validPileTypesToRemoveFrom = [
     pileTypes.WOOD_PILE,
@@ -15,16 +16,25 @@ const validPileTypesToRemoveFrom = [
 ];
 
 export const actionList = {
+    RESET_CARDS: 'RESET_CARDS',
     SELECT_CARD: 'SELECT_CARD',
     MOVE_CARD_TO_DUTCH_PILE: 'MOVE_CARD_TO_DUTCH_PILE',
     MOVE_CARD_TO_POST_PILE: 'MOVE_CARD_TO_POST_PILE',
-    MOVE_CARD_TO_WOOD_PILE: 'MOVE_CARD_TO_WOOD_PILE',
+    MOVE_CARDS_TO_WOOD_PILE: 'MOVE_CARDS_TO_WOOD_PILE',
+    MOVE_CARDS_TO_HAND: 'MOVE_CARDS_TO_HAND',
     DEAL_CARDS: 'DEAL_CARDS',
+    CLEAR_SELECTION: 'CLEAR_SELECTION',
     NOOP: 'NOOP',
 };
 
-export const testingAction = (cardOwnerId) =>({
+export const testingAction = (cardOwnerId) => ({
     type: 'TESTING_FUNCTION',
+    cardOwnerId
+
+});
+
+export const clearSelection = (cardOwnerId) => ({
+    type: actionList.CLEAR_SELECTION,
     cardOwnerId
 
 });
@@ -33,6 +43,12 @@ export const noop = () => ({
     type: 'NOOP',
 });
 
+export function resetCards() {
+    return {
+        type: actionList.RESET_CARDS,
+    }
+}
+
 export const moveCardToDutchPile = (playerId, dutchPileIndex) => ({
     type: actionList.MOVE_CARD_TO_DUTCH_PILE,
     playerId,
@@ -40,15 +56,20 @@ export const moveCardToDutchPile = (playerId, dutchPileIndex) => ({
 });
 
 // Move 3 cards from hand to Wood Pile
-export const moveCardToWoodPile = (playerId) => ({
-    type: actionList.MOVE_CARD_TO_WOOD_PILE,
+export const moveCardsToWoodPile = (playerId) => ({
+    type: actionList.MOVE_CARDS_TO_WOOD_PILE,
     playerId
 });
 
-export const moveCardToPostPile = (playerId, postPileIndex) => ({
+export const moveCardsToHand = (playerId) => ({
+    type: actionList.MOVE_CARDS_TO_HAND,
+    playerId
+});
+
+export const moveCardToPostPile = (playerId, postPileKey) => ({
     type: actionList.MOVE_CARD_TO_POST_PILE,
     playerId,
-    postPileIndex
+    postPileKey
 });
 
 export const selectCard = (playerId, pileType) => ({
@@ -95,7 +116,7 @@ export const moveCardIfValid = (playerId, cardOwnerId, pileType, pileIndex) => {
           if(checkMovementDutchPile(card, cards.dutchPiles[pileIndex]))
               dispatch(moveCardToDutchPile(playerId, pileIndex));
           else
-              dispatch(noop());
+              dispatch(clearSelection(cardOwnerId));
       }
       else if(playerId === cardOwnerId){
           const originPile = playerData.selectedCardOrigin;
@@ -104,39 +125,38 @@ export const moveCardIfValid = (playerId, cardOwnerId, pileType, pileIndex) => {
           console.log('%c SelectedCard: ', 'background: #888; color: #ffff00', card);
 
           switch(pileType){
-              case pileTypes.WOOD_PILE:
-                  dispatch(noop());
-                  break;
               case pileTypes.LEFT_POST_PILE:
                   if(checkMovementPostPile(card, playerData[pileTypes.LEFT_POST_PILE]))
                       dispatch(moveCardToPostPile(playerId, pileTypes.LEFT_POST_PILE));
                   else
-                      dispatch(noop());
+                      dispatch(clearSelection(cardOwnerId));
                   break;
               case pileTypes.MIDDLE_POST_PILE:
                   if(checkMovementPostPile(card, playerData[pileTypes.MIDDLE_POST_PILE]))
                       dispatch(moveCardToPostPile(playerId, pileTypes.MIDDLE_POST_PILE));
                   else
-                      dispatch(noop());
+                      dispatch(clearSelection(cardOwnerId));
                   break;
               case pileTypes.RIGHT_POST_PILE:
                   if(checkMovementPostPile(card, playerData[pileTypes.RIGHT_POST_PILE]))
                       dispatch(moveCardToPostPile(playerId, pileTypes.RIGHT_POST_PILE));
                   else
-                      dispatch(noop());
+                      dispatch(clearSelection(cardOwnerId));
                   break;
               default:
-                  dispatch(noop());
+                  dispatch(clearSelection(cardOwnerId));
           }
       }
       else{
-          dispatch(noop());
+          dispatch(clearSelection(cardOwnerId));
       }
 
   };
 };
 
 export const selectOriginCardIfValid = (playerId, cardOwnerId, pileType) => {
+
+    console.log('select card origin!');
     return(dispatch, getState) => {
         if( playerId === cardOwnerId &&
             getState().cards[`player${playerId}Data`][pileType].length > 0 &&
@@ -151,41 +171,47 @@ export const selectOriginCardIfValid = (playerId, cardOwnerId, pileType) => {
 export const cardClicked = (cardOwnerId, pileType, pileIndex) => {
     console.log("inside cardCliked thunk");
 
-    return (dispatch, getState) =>{
-        const { currentPlayerId, cards } = getState();
+    return (dispatch, getState) => {
+        const { currentPlayerId, cards, playing } = getState();
         const prevSelectedCard = cards[`player${currentPlayerId}Data`].selectedCardOrigin;
 
+        if(!playing){
+            dispatch(noop());
+        }
         // If the player is selecting the origin of the play movement
-        if(prevSelectedCard === null){
+        else if(prevSelectedCard === null){
             dispatch(selectOriginCardIfValid(currentPlayerId, cardOwnerId, pileType));
         }
         else{
             dispatch(moveCardIfValid(currentPlayerId, cardOwnerId, pileType, pileIndex));
         }
     };
+};
 
-    // return (dispatch, getState) => {
-    //     const state = getState();
-    //
-    //     const playerData = state[`player${playerId}Data`];
-    //
-    //     if(playerData.origin === null)
-    //         dispatch(selectOriginCardIfValid(playerId, cardId, pileType));
-    //     else
-    //         dispatch(moveCardIfValid(playerId, cardId, pileType));
-    //
-    // };
+export const plusWoodPileClicked = (cardOwnerId) => {
+
+    return (dispatch, getState) => {
+        const { currentPlayerId, cards, playing } = getState();
+
+        if(!playing)
+            dispatch(noop());
+        else if(currentPlayerId === cardOwnerId){
+            const playerHand = cards[`player${currentPlayerId}Data`].hand;
+
+            if(playerHand.length)
+                dispatch(moveCardsToWoodPile(cardOwnerId));
+            else
+                dispatch(moveCardsToHand(cardOwnerId));
+        }
+        else{
+            dispatch(noop());
+        }
+    }
 };
 
 export const shuffleAndDealCards = () => {
-    console.log("inside dealCards thunk");
 
-    const decks = shuffleArray([
-        shuffleArray(generateCardsArray(colors.red)),
-        shuffleArray(generateCardsArray(colors.blue)),
-        shuffleArray(generateCardsArray(colors.green)),
-        shuffleArray(generateCardsArray(colors.yellow)),
-    ]);
+    const decks = shuffleArray(Array(4).fill().map(() => shuffleArray(generateCardsArray())));
 
     return (dispatch) => {
         dispatch(dealCards(decks));

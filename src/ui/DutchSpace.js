@@ -16,7 +16,7 @@ const styles = {
     },
 };
 
-const DutchSpace = ({classes}) => {
+let DutchSpace = ({classes}) => {
     return(
         <div className={classes.dutchSpace}>
             {Array(20).fill().map((v,index) => <DutchPile card={1} key={index} pileIndex={index}/>)}
@@ -24,4 +24,8 @@ const DutchSpace = ({classes}) => {
     );
 };
 
-export default withStyles(styles)(DutchSpace);
+DutchSpace = withStyles(styles)(DutchSpace);
+
+
+
+export default DutchSpace;

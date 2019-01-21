@@ -17,6 +17,7 @@ export const emptyCardObj = {
 };
 
 const NUMBER_OF_CARDS = 40;
+const MAX_CARD_NUMBER = 10;
 
 export function shuffleArray(array) {
     let counter = array.length;
@@ -38,7 +39,7 @@ export function shuffleArray(array) {
     return array;
 }
 
-export function generateCardsArray(color){
+/*export function generateCardsArray(color=colors.red){
     let gender;
     if(color === colors.red || color === colors.blue)
         gender = genders.male;
@@ -52,4 +53,31 @@ export function generateCardsArray(color){
         gender,
         number: index % 10 + 1,
     }));
+}*/
+
+export function generateCardsArray(){
+
+    const genderColorPairs = [
+        {color: colors.red, gender: genders.male},
+        {color: colors.blue, gender: genders.male},
+        {color: colors.green, gender: genders.female},
+        {color: colors.yellow, gender: genders.female},
+    ];
+
+    const cardsArray = genderColorPairs.map( (obj) => {
+        return Array(MAX_CARD_NUMBER).fill().map((v,index) => ({
+            color: obj.color,
+            gender: obj.gender,
+            number: index + 1,
+        }));
+    });
+
+    //console.log(cardsArray.flat())
+    return cardsArray.flat();
+
+    // return Array(NUMBER_OF_CARDS).fill().map((v,index) => ({
+    //     color: genderColorPairs[],
+    //     gender:,
+    //     number: index % 10 + 1,
+    // }));
 }

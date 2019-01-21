@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux';
 import {withStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import {shuffleAndDealCards} from "../redux/cards/action";
+import {shuffleAndDealCards, resetCards} from "../redux/cards/action";
 import {togglePlayPause} from "../redux/playing";
 
 const styles = theme => ({
@@ -17,10 +17,14 @@ const styles = theme => ({
     },
 });
 
-let Options = ({classes, playing, dealCardsCallback, playPauseCallback}) => {
+let Options = ({classes, playing, dealCardsCallback, resetCallback, playPauseCallback}) => {
     return(
         <div className={classes.options}>
-            <Button variant="contained" className={classes.button}>
+            <Button
+                variant="contained"
+                className={classes.button}
+                onClick={resetCallback}
+            >
                 Reset
             </Button>
             <Button
@@ -56,6 +60,7 @@ function mapDispatchToProps(dispatch) {
     return {
         playPauseCallback: () => dispatch(togglePlayPause()),
         dealCardsCallback: () => dispatch(shuffleAndDealCards()),
+        resetCallback: () => dispatch(resetCards()),
     }
 }
 

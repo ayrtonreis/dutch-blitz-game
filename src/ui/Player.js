@@ -3,6 +3,8 @@ import {withStyles} from '@material-ui/core/styles';
 import WoodPile from './WoodPile'
 import PostPile from './PostPile'
 import BlitzPile from './BlitzPile'
+import {cardClicked, plusWoodPileClicked} from "../redux/cards/action";
+import {connect} from "react-redux";
 
 const styles = {
     player: {
@@ -21,8 +23,13 @@ const styles = {
         padding: '8px',
         gridTemplateColumns: 'repeat(5, 1fr)'
     },
-    card: {
-        backgroundColor: 'red'
+    playerFooter: {
+        display: 'grid',
+        gridGap: '2px',
+        padding: '0 8px 4px 8px',
+        gridTemplateColumns: 'repeat(5, 1fr)',
+
+        fontSize: '10px'
     }
 };
 
@@ -46,14 +53,43 @@ let PlayerSpace = ({classes, id}) => {
 };
 PlayerSpace = withStyles(styles)(PlayerSpace);
 
-
-const Player = ({classes, id, name}) => {
-    return(
-        <div className={classes.player}>
-            <PlayerHeader name={name}/>
-            <PlayerSpace id={id}/>
+let PlayerFooter = ({classes, id, onClick}) => {
+    return (
+        <div className={classes.playerFooter}>
+            <button
+                style={{fontSize: '8px'}}
+                onClick={onClick}
+            >+</button>
         </div>
     );
 };
 
-export default withStyles(styles)(Player);
+PlayerFooter = withStyles(styles)(PlayerFooter);
+
+function mapStateToProps(state, ownProps){
+    return {};
+}
+
+function mapDispatchToProps(dispatch, ownProps){
+    const {id: cardOwnerId} = ownProps;
+    return{
+        onClick: () => dispatch(plusWoodPileClicked(cardOwnerId)),
+    }
+}
+
+PlayerFooter = connect(mapStateToProps, mapDispatchToProps)(PlayerFooter);
+
+
+let Player = ({classes, id, name}) => {
+    return(
+        <div className={classes.player}>
+            <PlayerHeader name={name}/>
+            <PlayerSpace id={id}/>
+            <PlayerFooter id={id}/>
+        </div>
+    );
+};
+
+Player = withStyles(styles)(Player);
+
+export default Player;

@@ -16,61 +16,54 @@ function addToWoodPile(pile, cards){
     return [...pile, ...cards]
 }
 
-function addToPostPile(piles, card, position){
-    const newPiles = piles.map((pile, index) => {
-        if(index === position)
-            return [...pile, card];
-
-        return pile;
-    });
-
-    // return new post piles
-    return newPiles;
+function addToPostPile(pile, card){
+    // return new post pile
+    return [...pile, card];
 }
 
-function removeFromBlitzPile(pile){
-    // return {newBlitzPile, removedCard}
-    if(pile.length > 0)
-        return ({
-            pile: pile.slice(0, -1),
-            card: pile[pile.length-1]
-        });
-    return ({
-        pile: pile,
-        card: null
-    })
-}
-
-function removeFromWoodPile(pile){
-    // {newWoodPile, card}
-    if(pile.length > 0)
-        return ({
-            pile: pile.slice(0, -1),
-            card: pile[pile.length-1]
-        });
-    return ({
-        pile: pile,
-        card: null
-    })
-}
-
-function removeFromPostPile(piles, position){
-    let takenCard = null;
-
-    const newPiles = piles.map((pile, index) => {
-        if(index === position && piles.length > 0){
-            takenCard = pile[pile.length-1];
-            return pile.slice(0, -1);
-        }
-        return pile;
-    });
-
-    // {newPostPiles, card}
-    return ({
-        piles: newPiles,
-        card: takenCard
-    });
-}
+// function removeFromBlitzPile(pile){
+//     // return {newBlitzPile, removedCard}
+//     if(pile.length > 0)
+//         return ({
+//             pile: pile.slice(0, -1),
+//             card: pile[pile.length-1]
+//         });
+//     return ({
+//         pile: pile,
+//         card: null
+//     })
+// }
+//
+// function removeFromWoodPile(pile){
+//     // {newWoodPile, card}
+//     if(pile.length > 0)
+//         return ({
+//             pile: pile.slice(0, -1),
+//             card: pile[pile.length-1]
+//         });
+//     return ({
+//         pile: pile,
+//         card: null
+//     })
+// }
+//
+// function removeFromPostPile(pile, position){
+//     let takenCard = null;
+//
+//     const newPiles = piles.map((pile, index) => {
+//         if(index === position && piles.length > 0){
+//             takenCard = pile[pile.length-1];
+//             return pile.slice(0, -1);
+//         }
+//         return pile;
+//     });
+//
+//     // {newPostPiles, card}
+//     return ({
+//         piles: newPiles,
+//         card: takenCard
+//     });
+// }
 
 function selectCard(playerId, pileType){
 
@@ -81,11 +74,9 @@ function noop(state){
     return state;
 }
 
-const removeFrom = {
-    'BLITZ_PILE': removeFromBlitzPile,
-    'WOOD_PILE': removeFromWoodPile,
-    'POST_PILE': removeFromPostPile,
-};
+function removeTopCards(pile, numberOfCards){
+    return pile.slice(0, -numberOfCards)
+}
 
 // function cardsReducer(state, action){
 //     /*
@@ -206,7 +197,7 @@ function buildPlayerData(deck){
 
     const postPileArray = deck.slice(0, 3);
     const blitzArray = deck.slice(3, 13);
-    const handArray = deck.slice(14);
+    const handArray = deck.slice(13);
 
     return ({
         nbCardsInDutchPiles: 0,
@@ -230,9 +221,12 @@ function buildPlayerData(deck){
 function cardsReducer(state=initialState, action){
     const newState = {...state};
 
-    let playerDataKey, newPlayerData;
+    let playerDataKey, newPlayerData, selectedCardOrigin, card;
 
     switch(action.type){
+        case actionList.RESET_CARDS:
+            return initialState;
+
         case actionList.DEAL_CARDS:
             console.log('%c DEAL_CARDS! ', 'background: #888; color: #ffffff');
 
@@ -248,6 +242,7 @@ function cardsReducer(state=initialState, action){
 
         case actionList.SELECT_CARD:
             console.log('%c SELECT_CARD! ', 'background: #888; color: #ffffff');
+
             playerDataKey = `player${action.playerId}Data`;
             newPlayerData = {...newState[playerDataKey]};
 
@@ -257,25 +252,80 @@ function cardsReducer(state=initialState, action){
             console.log(newState);
             return newState;
 
+        case actionList.MOVE_CARDS_TO_WOOD_PILE:
+            console.log('%c MOVE_CARDS_TO_WOOD_PILE! ', 'background: #888; color: #ffffff');
+            console.log('State before', state);
+
+            playerDataKey = `player${action.playerId}Data`;
+            newPlayerData = {...newState[playerDataKey]};
+
+            const oldHand = newPlayerData.hand;
+            const remainingHand = oldHand.slice(0, -3);
+            const removedFromHand = oldHand.slice(-3);
+
+            newPlayerData.hand = remainingHand;
+            newPlayerData[pileTypes.WOOD_PILE] = addToWoodPile(newPlayerData[pileTypes.WOOD_PILE], removedFromHand);
+
+            newState[playerDataKey] = newPlayerData;
+
+            console.log('State after', newState);
+
+            return newState;
+
         case actionList.MOVE_CARD_TO_DUTCH_PILE:
             console.log('%c MOVE_CARD_TO_DUTCH_PILE! ', 'background: #888; color: #ffffff');
 
             playerDataKey = `player${action.playerId}Data`;
             newPlayerData = {...newState[playerDataKey]};
+            selectedCardOrigin = newPlayerData.selectedCardOrigin;
 
-            const card = newPlayerData[newPlayerData.selectedCardOrigin].slice(-1)[0];
+            card = newPlayerData[selectedCardOrigin].slice(-1)[0];
 
+            newPlayerData[selectedCardOrigin] = removeTopCards(newPlayerData[selectedCardOrigin], 1);
+            newPlayerData.selectedCardOrigin = null;
+
+            newState[playerDataKey] = newPlayerData;
             newState.dutchPiles = addToDutchPile(state.dutchPiles, card, action.dutchPileIndex);
 
             console.log(newState);
             return newState;
 
         case actionList.MOVE_CARD_TO_POST_PILE:
+            console.log('%c MOVE_CARD_TO_POST_PILE! ', 'background: #888; color: #ffffff');
 
+            playerDataKey = `player${action.playerId}Data`;
+            newPlayerData = {...newState[playerDataKey]};
+            selectedCardOrigin = newPlayerData.selectedCardOrigin;
+
+            card = newPlayerData[selectedCardOrigin].slice(-1)[0];
+
+            newPlayerData[selectedCardOrigin] = removeTopCards(newPlayerData[selectedCardOrigin], 1);
+            newPlayerData.selectedCardOrigin = null;
+
+            newPlayerData[action.postPileKey] = addToPostPile(newPlayerData[action.postPileKey], card);
+
+            newState[playerDataKey] = newPlayerData;
+            //newState.dutchPiles = addToDutchPile(state.dutchPiles, card, action.dutchPileIndex);
+
+            console.log(newState);
             return newState;
 
-        case actionList.MOVE_CARD_TO_WOOD_PILE:
-            console.log('MOVE_CARD_TO_WOOD_PILE');
+        case actionList.MOVE_CARDS_TO_HAND:
+
+            console.log('%c MOVE_CARDS_TO_HAND! ', 'background: #888; color: #ffffff');
+
+            playerDataKey = `player${action.playerId}Data`;
+            newPlayerData = {...newState[playerDataKey]};
+
+            console.log('Player before', newPlayerData);
+
+            newPlayerData.hand = newPlayerData[pileTypes.WOOD_PILE];
+            newPlayerData[pileTypes.WOOD_PILE] = [];
+
+            newState[playerDataKey] = newPlayerData;
+
+            console.log('Player after', newPlayerData);
+
             return newState;
 
         default:

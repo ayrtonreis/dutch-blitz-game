@@ -2,6 +2,9 @@ import React from 'react'
 import {withStyles} from '@material-ui/core/styles';
 import Card from './Card'
 import pileTypes from "../pileTypes";
+import {emptyCardObj} from '../utils'
+import {cardClicked} from "../redux/cards/action";
+import {connect} from "react-redux";
 
 const styles = theme => ({
     dutchPile: {
@@ -11,12 +14,29 @@ const styles = theme => ({
 });
 
 //pileType={pileTypes.DUTCH_PILE}
-const DutchPile = ({classes, card, pileIndex}) => {
+let DutchPile = ({classes, card, pileIndex}) => {
     return(
         <div className={classes.dutchPile}>
-            <Card pileType={pileTypes.DUTCH_PILE} pileIndex={pileIndex}/>
+            <Card pileType={pileTypes.DUTCH_PILE}
+                  pileIndex={pileIndex}
+                  color={card.color}
+                  gender={card.gender}
+                  number={card.number}
+            />
         </div>
     );
 };
 
-export default withStyles(styles)(DutchPile);
+DutchPile = withStyles(styles)(DutchPile)
+
+function mapStateToProps(state, {pileIndex}){
+    const card = state.cards.dutchPiles[pileIndex] || emptyCardObj;
+
+    return {
+        card
+    };
+}
+
+DutchPile = connect(mapStateToProps)(DutchPile);
+
+export default DutchPile;
